@@ -37,7 +37,7 @@ CORE_IMAGE_EXTRA_INSTALL += " \
 # To include original packages
 #
 CORE_IMAGE_EXTRA_INSTALL += " \
-			 octa-files \
+			 yocta-files \
 			 "
 
 #

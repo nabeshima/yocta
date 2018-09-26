@@ -5,7 +5,7 @@ fi
 export PATH=/sbin:/usr/sbin:${PATH}
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 
-INITIAL_SETUP_PATH=/usr/Octa/install-scripts/installer.sh
+INITIAL_SETUP_PATH=/usr/yocta/install-scripts/installer.sh
 
 
 if [ -f ${INITIAL_SETUP_PATH} ]

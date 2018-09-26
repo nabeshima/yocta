@@ -1,4 +1,4 @@
-SUMMARY = "Octa files"
+SUMMARY = "Yocta files"
 DESCRIPTION = "Basic init system drived from tiny-init"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
@@ -15,8 +15,8 @@ do_install[depends] += "core-image-initramfs:do_image_complete"
 inherit useradd
 
 USERADD_PACKAGES = "${PN}"
-USERADD_PARAM_${PN} = "-u 500 -g 500 -d /home/octa -r -s /bin/sh octa"
-GROUPADD_PARAM_${PN} = "-g 500 octa"
+USERADD_PARAM_${PN} = "-u 500 -g 500 -d /home/yocta -r -s /bin/sh yocta"
+GROUPADD_PARAM_${PN} = "-g 500 yocta"
 
 CONFDIR = "${TOPDIR}/conf"
 
@@ -55,17 +55,17 @@ do_install() {
 
 	ln -sf ../run/resolv.conf ${D}/etc/resolv.conf
 
-	install -o octa -g octa -m 0755 -d ${D}/home/octa
+	install -o yocta -g yocta -m 0755 -d ${D}/home/yocta
 
-	install -m 0755 -d ${D}/usr/Octa/startup-scripts
-	install -m 0755 ${S}/startup-scripts/* ${D}/usr/Octa/startup-scripts/
-	install -m 0644 ${TMPDIR}/work/genericx86-poky-linux/core-image-initramfs/1.0-r0/deploy-core-image-initramfs-image-complete/core-image-initramfs-genericx86.cpio.gz ${D}/usr/Octa/startup-scripts/initramfs
+	install -m 0755 -d ${D}/usr/yocta/startup-scripts
+	install -m 0755 ${S}/startup-scripts/* ${D}/usr/yocta/startup-scripts/
+	install -m 0644 ${TMPDIR}/work/genericx86-poky-linux/core-image-initramfs/1.0-r0/deploy-core-image-initramfs-image-complete/core-image-initramfs-genericx86.cpio.gz ${D}/usr/yocta/startup-scripts/initramfs
     
 	#
 	# Copy scripts to install the system to the installer image.
 	#
-	install -m 0755 -d ${D}/usr/Octa/install-scripts
-	install -m 0755 ${S}/install-scripts/installer.sh ${D}/usr/Octa/install-scripts/
+	install -m 0755 -d ${D}/usr/yocta/install-scripts
+	install -m 0755 ${S}/install-scripts/installer.sh ${D}/usr/yocta/install-scripts/
 
 	# Overwrite profile file to start installer.sh just after login.
 	#
@@ -78,15 +78,15 @@ FILES_${PN} = "/etc \
             \
             /etc/resolv.conf \
 	    \
-	    /home/octa \
+	    /home/yocta \
 	    \
 	    /usr \
-	    /usr/Octa \
+	    /usr/yocta \
 	    \
-	    /usr/Octa/startup-scripts \
-	    /usr/Octa/startup-scripts/* \
-	    /usr/Octa/install-scripts \
-	    /usr/Octa/install-scripts/* \
+	    /usr/yocta/startup-scripts \
+	    /usr/yocta/startup-scripts/* \
+	    /usr/yocta/install-scripts \
+	    /usr/yocta/install-scripts/* \
             \
             /home/root \
             /hoem/root/.profile \
