@@ -1,0 +1,31 @@
+--- kernel-source.orig/drivers/usb/core/hcd.c	2018-09-26 23:00:22.210124494 +0900
++++ kernel-source/drivers/usb/core/hcd.c	2018-09-26 23:10:42.397169860 +0900
+@@ -1853,7 +1853,27 @@ void usb_hcd_giveback_urb(struct usb_hcd
+ 		bh = &hcd->low_prio_bh;
+ 		high_prio_bh = false;
+ 	}
+-
++	
++	/*
++	  Hack for CP210x by Silicon Labs factory default.
++	  { USB_DEVICE(0x10C4, 0xEA60) }
++	  { USB_DEVICE(0x10C4, 0xEA61) }
++	  { USB_DEVICE(0x10C4, 0xEA70) }
++	  
++	  struct usb_driver *driver = to_usb_driver(urb->dev->dev.driver);
++	  if ( strncmp(driver->name, "cp210x", 6 ) == 0 ) {
++	  bh = &hcd->high_prio_bh;
++	  high_prio_bh = true;
++	  } 	  
++	*/
++	if ( urb->dev->descriptor.idVendor == 0x10C4 &&
++	     ( urb->dev->descriptor.idProduct == 0xEA60 || 
++	       urb->dev->descriptor.idProduct == 0xEA61 || 
++	       urb->dev->descriptor.idProduct == 0xEA70 ) ){
++	  bh = &hcd->high_prio_bh;
++	  high_prio_bh = true;
++	}
++	
+ 	spin_lock(&bh->lock);
+ 	list_add_tail(&urb->urb_list, &bh->head);
+ 	running = bh->running;

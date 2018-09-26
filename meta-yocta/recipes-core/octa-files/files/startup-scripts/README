@@ -1,0 +1,25 @@
+The startup sequence is,
+
+Kernel reads /etc/inittab at first
+/etc/inittab sets 
+  /etc/init.d/rcS to call it after kernel boot.
+  /etc/init.d/rcK to call it when shutdown
+
+/etc/init.d/rcS calls mount and /etc/rcS.d/S* in the dictionary oder.
+
+/etc/rcS.d/S* are all symlinks to /etc/init.d/*
+
+- S00: sysinit
+  calls mount, hostname
+  starts syslogd
+
+- S98: startup	
+  starts dbus  
+  calls remount
+  calls /bin/bash
+
+
+If the shuting down is happily processed,
+/etc/init.d/rcK calls /etc/rcS.d/K* in the dictionary oder.
+
+/etc/rcS.d/K* are all symlinks to /etc/init.d/*

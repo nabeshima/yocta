@@ -1,0 +1,16 @@
+# The original /etc/inittab will be replaced this file via installation
+
+id:5:initdefault:
+
+si::sysinit:/etc/init.d/rcS
+
+~~:S:wait:/sbin/sulogin
+
+l0:0:wait:/sbin/halt
+l6:6:wait:/sbin/reboot
+z6:6:respawn:/sbin/sulogin
+
+ca::ctrlaltdel:/sbin/reboot
+
+S0:12345:respawn:/bin/start_getty 115200 ttyS0
+1:12345:respawn:/sbin/getty 38400 tty1

@@ -1,0 +1,17 @@
+if [ "$PS1" ]; then
+    export PS1='\u@\w\# '
+fi
+
+export PATH=/sbin:/usr/sbin:${PATH}
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
+
+INITIAL_SETUP_PATH=/usr/Octa/install-scripts/installer.sh
+
+
+if [ -f ${INITIAL_SETUP_PATH} ]
+then
+        clear 2>/dev/null
+        echo "Running installer.sh"
+        echo "Type ^C to abort"
+        sh ${INITIAL_SETUP_PATH}
+fi

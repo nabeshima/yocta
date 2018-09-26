@@ -1,0 +1,16 @@
+# The original /etc/init.d/rcS will be replaced this file via installation
+
+#!/bin/sh
+#	$Id: rcS,v 1.7 2007/10/25 21:58:06 jwessel Exp $
+# This is a minmal rcS file for target startup
+# Make sure that /proc is mounted.
+mount -a
+# Assign an address to the loopback device.
+ifconfig lo 127.0.0.1 up
+# Startup any daemon scripts
+for e in `ls /etc/rcS.d/S* 2> /dev/null`; do
+	$e start
+done
+exit 0
+
+

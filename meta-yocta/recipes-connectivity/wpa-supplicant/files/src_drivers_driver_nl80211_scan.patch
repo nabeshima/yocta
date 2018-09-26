@@ -1,0 +1,59 @@
+diff -urpN wpa_supplicant-2.6.orig/src/drivers/driver_nl80211_scan.c wpa_supplicant-2.6/src/drivers/driver_nl80211_scan.c
+--- wpa_supplicant-2.6.orig/src/drivers/driver_nl80211_scan.c	2018-09-25 09:19:33.644100478 +0900
++++ wpa_supplicant-2.6/src/drivers/driver_nl80211_scan.c	2018-09-25 09:18:04.238894888 +0900
+@@ -582,6 +582,7 @@ int bss_info_handler(struct nl_msg *msg,
+ 	};
+ 	struct nl80211_bss_info_arg *_arg = arg;
+ 	struct wpa_scan_results *res = _arg->res;
++	struct wpa_driver_nl80211_data *drv = _arg->drv;
+ 	struct wpa_scan_res **tmp;
+ 	struct wpa_scan_res *r;
+ 	const u8 *ie, *beacon_ie;
+@@ -638,7 +639,7 @@ int bss_info_handler(struct nl_msg *msg,
+ 		beacon_ie_len = 0;
+ 	}
+ 
+-	if (nl80211_scan_filtered(_arg->drv, ie ? ie : beacon_ie,
++	if (nl80211_scan_filtered(drv, ie ? ie : beacon_ie,
+ 				  ie ? ie_len : beacon_ie_len))
+ 		return NL_SKIP;
+ 
+@@ -695,6 +696,38 @@ int bss_info_handler(struct nl_msg *msg,
+ 		}
+ 	}
+ 
++	// Hold scan-requested SSID to local once it is specified
++	static u8 ssid_len_hold = 0;
++	static u8 ssid_hold[SSID_MAX_LEN];
++	
++	if (drv->ssid_len != 0) {
++	  ssid_len_hold = drv->ssid_len;
++	  os_memcpy(ssid_hold, drv->ssid, ssid_len_hold);
++	}
++
++	// Overwrite SSID when it is susupected as hidden SSID.
++	if (ssid_len_hold > 0) {
++	  u8 *s = (u8*)get_ie((u8 *) (r + 1), r->ie_len, WLAN_EID_SSID);
++	  if (s != NULL) {
++	    if (s[1] == 0) { // Zero-length SSID.
++	      s[1] = ssid_len_hold;
++	      os_memcpy(s + 2, ssid_hold, ssid_len_hold);
++	    }
++	    else if (s[1] == ssid_len_hold) {
++	      int i;
++	      for (i = 0; i < ssid_len_hold; ++i) {
++		if (s[i + 2] != '\0') {
++		  break;
++		}
++	      }
++	      if (i == ssid_len_hold) { // NULL character string SSID.
++		os_memcpy(s + 2, ssid_hold, ssid_len_hold);
++	      }
++	    }
++	  }
++	}
++
++
+ 	/*
+ 	 * cfg80211 maintains separate BSS table entries for APs if the same
+ 	 * BSSID,SSID pair is seen on multiple channels. wpa_supplicant does

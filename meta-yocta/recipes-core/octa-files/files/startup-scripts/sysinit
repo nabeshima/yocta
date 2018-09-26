@@ -1,0 +1,23 @@
+#!/bin/sh
+
+#
+# mount systems
+#
+/bin/mount -t proc proc /proc
+/bin/mount -t sysfs sysfs /sys
+
+mkdir -m 1777 -p /var/volatile/tmp
+mkdir -p /var/volatile/log/
+mkdir -p /var/run/avahi-daemon/
+mkdir -p /var/run/dbus/
+mkdir -p /var/lib/dbus/
+
+touch /var/log/messages
+touch /var/log/lastlog
+touch /var/log/wtmp
+
+#
+# preliminarily start services to leave messsages
+#
+/sbin/syslogd
+logger -s -t "${0}" "system initializing"

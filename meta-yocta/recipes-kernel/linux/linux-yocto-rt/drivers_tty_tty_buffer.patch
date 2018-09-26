@@ -1,0 +1,11 @@
+--- kernel-source.orig/drivers/tty/tty_buffer.c	2018-09-26 23:00:22.178139569 +0900
++++ kernel-source/drivers/tty/tty_buffer.c	2018-09-26 23:08:49.633570586 +0900
+@@ -404,7 +404,7 @@ void tty_schedule_flip(struct tty_port *
+ 	 * flush_to_ldisc() sees buffer data.
+ 	 */
+ 	smp_store_release(&buf->tail->commit, buf->tail->used);
+-	queue_work(system_unbound_wq, &buf->work);
++	queue_work(system_highpri_wq, &buf->work);
+ }
+ EXPORT_SYMBOL(tty_schedule_flip);
+ 
