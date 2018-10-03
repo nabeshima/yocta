@@ -57,6 +57,20 @@ bitbake-layers add-layer yocta/meta-yocta
 
 - Build the SDK
 
+Comment out the following lines in `meta-yocta/recipes-rt/images/core-image-rt.bbappend`.
+
+```
+CORE_IMAGE_EXTRA_INSTALL += " \
+			 r8168-driver \
+			 linux-firmware-ralink \
+			 "
+```
+
+This is because these packages require the relevant SDK and the kernel source to build.
+This comment out should be reveted after installation of SDK.
+
+Then, do,
+
 ```
 bitbake core-image-rt -c populate_sdk
 ```
